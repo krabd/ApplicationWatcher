@@ -7,7 +7,7 @@
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate />
 
-		<Feature Id="ProductFeature" Title="ApplicationWatcher.Service.Setup" Level="1">
+		<Feature Id="ProductFeature" Title="ApplicationWatcher.Setup" Level="1">
 			<ComponentGroupRef Id="ApplicationWatcherServiceProject" />
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
@@ -16,7 +16,7 @@
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="ApplicationWatcher" />
+				<Directory Id="INSTALLFOLDER" Name="Application Watcher" />
 			</Directory>
 		</Directory>
 	</Fragment>
