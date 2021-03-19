@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ApplicationWatcherService.Api.Models.Options;
+using ApplicationWatcherService.Grpc.Client.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,15 +11,15 @@ namespace ApplicationWatcherService.Api.Services.HostedServices
 {
     public class HealthCheckService : BackgroundService
     {
-        private readonly ISvGrpcClientService _svGrpcClientService;
+        private readonly IGrpcClientService _grpcClientService;
         private readonly HealthCheckOptions _healthCheckOptions;
         private readonly GrpcOptions _grpcOptions;
         private readonly ILogger<HealthCheckService> _logger;
 
-        public HealthCheckService(ISvGrpcClientService svGrpcClientService, IOptions<HealthCheckOptions> healthCheckOptions, IOptions<GrpcOptions> grpcOptions,
+        public HealthCheckService(IGrpcClientService grpcClientService, IOptions<HealthCheckOptions> healthCheckOptions, IOptions<GrpcOptions> grpcOptions,
             ILogger<HealthCheckService> logger)
         {
-            _svGrpcClientService = svGrpcClientService;
+            _grpcClientService = grpcClientService;
 
             _healthCheckOptions = healthCheckOptions.Value;
             _grpcOptions = grpcOptions.Value;
@@ -34,7 +35,7 @@ namespace ApplicationWatcherService.Api.Services.HostedServices
 
                 try
                 {
-                    await _svGrpcClientService.HealthCheckSv(_grpcOptions.GetUri(), _healthCheckOptions.TimeoutSeconds, stoppingToken);
+                    await _grpcClientService.HealthCheck(_grpcOptions.GetUri(), _healthCheckOptions.TimeoutSeconds, stoppingToken);
                 }
                 catch (Exception e)
                 {

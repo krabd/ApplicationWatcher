@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ApplicationWatcherService.Api.Interfaces;
 using ApplicationWatcherService.Api.Models.Options;
+using ApplicationWatcherService.Grpc.Client.Interfaces;
 using ApplicationWatcherService.Utils.Helpers;
 using ApplicationWatcherService.Utils.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace ApplicationWatcherService.Api.Services
     {
         private readonly IRegistryService _registryService;
         private readonly IProcessService _processService;
-        private readonly ISvGrpcClientService _svGrpcClient;
+        private readonly IGrpcClientService _grpcClient;
 
         private readonly RegistryOptions _registryOptions;
         private readonly HealthCheckOptions _healthCheckOptions;
@@ -26,12 +27,12 @@ namespace ApplicationWatcherService.Api.Services
 
         private readonly ILogger<ApplicationWatcherService> _logger;
 
-        public ApplicationWatcherService(IRegistryService registryService, IProcessService processService, ISvGrpcClientService svGrpcClient,
+        public ApplicationWatcherService(IRegistryService registryService, IProcessService processService, IGrpcClientService grpcClient,
             IOptions<RegistryOptions> registryOptions, IOptions<HealthCheckOptions> healthCheckOptions, IOptions<GrpcOptions> grpcOptions, ILogger<ApplicationWatcherService> logger)
         {
             _registryService = registryService;
             _processService = processService;
-            _svGrpcClient = svGrpcClient;
+            _grpcClient = grpcClient;
 
             _registryOptions = registryOptions.Value;
             _healthCheckOptions = healthCheckOptions.Value;
@@ -99,7 +100,7 @@ namespace ApplicationWatcherService.Api.Services
 
             try
             {
-                return await _svGrpcClient.HealthCheckSv(_grpcOptions.GetUri(), _healthCheckOptions.TimeoutSeconds, cancellationToken);
+                return await _grpcClient.HealthCheck(_grpcOptions.GetUri(), _healthCheckOptions.TimeoutSeconds, cancellationToken);
             }
             catch (Exception e)
             {

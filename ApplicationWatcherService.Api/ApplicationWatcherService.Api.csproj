@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationWatcherService.Grpc.Client\ApplicationWatcherService.Grpc.Client.csproj" />
     <ProjectReference Include="..\ApplicationWatcherService.Utils\ApplicationWatcherService.Utils.csproj" />
   </ItemGroup>
 

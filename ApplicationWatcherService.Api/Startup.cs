@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using ApplicationWatcherService.Api.Interfaces;
 using ApplicationWatcherService.Api.Models.Options;
 using ApplicationWatcherService.Api.Services.HostedServices;
+using ApplicationWatcherService.Grpc.Client.Interfaces;
+using ApplicationWatcherService.Grpc.Client.Services;
 using ApplicationWatcherService.Utils.Interfaces;
 using ApplicationWatcherService.Utils.Services;
 
@@ -39,7 +41,7 @@ namespace ApplicationWatcherService.Api
 
             services.AddScoped<IApplicationWatcherService, Services.ApplicationWatcherService>();
 
-            services.AddTransient<ISvGrpcClientService, SvGrpcClientService>();
+            services.AddTransient<IGrpcClientService, GrpcClientService>();
             services.AddTransient<IRegistryService, RegistryService>();
             services.AddTransient<IProcessService, ProcessService>();
 
