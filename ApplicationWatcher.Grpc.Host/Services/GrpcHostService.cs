@@ -12,9 +12,9 @@ namespace ApplicationWatcher.Grpc.Host.Services
 
         private Server _server;
 
-        public GrpcHostService(ILogger<GrpcHostService> logger)
+        public GrpcHostService()
         {
-            _logger = logger ?? NullLogger<GrpcHostService>.Instance;
+            _logger = NullLogger<GrpcHostService>.Instance;
         }
 
         public Task StartServer(string host, int port)

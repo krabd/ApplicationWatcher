@@ -17,7 +17,7 @@ namespace ApplicationWatcher.Service.Api
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
-                .WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", $"ApplicationWatcherService_Log.txt"),
+                .WriteTo.File(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", $"ApplicationWatcher_Log.txt"),
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true,
                     outputTemplate: "{Timestamp:dd-MM-yyyy HH:mm:ss} [{Level:u3}] [{SourceContext}] ({MachineName}/{ThreadId}) {Message}{NewLine}{Exception}")
