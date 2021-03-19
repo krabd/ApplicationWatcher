@@ -1,6 +1,6 @@
 {
   "runtime": "NetCore31",
-  "defaultVariables": "CSharpOutputPath=..\\ApplicationWatcherService.HttpClient",
+  "defaultVariables": "CSharpOutputPath=..\\ApplicationWatcherService.Http.Client",
   "documentGenerator": {
     "aspNetCoreToOpenApi": {
       "project": "ApplicationWatcherService.Api.csproj",
@@ -78,7 +78,7 @@
       "clientClassAccessModifier": "public",
       "typeAccessModifier": "public",
       "generateContractsOutput": true,
-      "contractsNamespace": "ApplicationWatcherService.HttpClient.Contracts",
+      "contractsNamespace": "ApplicationWatcherService.Http.Client.Contracts",
       "contractsOutputFilePath": "$(CSharpOutputPath)/ApplicationWatcherServiceContracts.g.cs",
       "parameterDateTimeFormat": "s",
       "parameterDateFormat": "yyyy-MM-dd",
