@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>08ad12e7-54e1-4c12-8e60-1dd4ad8b0040</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>ApplicationWatcher.Service.Setup</OutputName>
+    <OutputType>Package</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+    <SuppressIces>ICE30</SuppressIces>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <Compile Include="ApplicationWatcher.Service.Api.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationWatcher.Service.Api\ApplicationWatcher.Service.Api.csproj">
+      <Name>ApplicationWatcher.Service.Api</Name>
+      <Project>{88834161-d302-4103-992d-6a0fe67bb48a}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
+  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
+    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
+  </Target>
+  <Target Name="BeforeBuild">
+    <Exec Command="dotnet publish ..\ApplicationWatcher.Service.Api\ApplicationWatcher.Service.Api.csproj -c $(Configuration) -r win10-x64" />
+    <PropertyGroup>
+      <LinkerBaseInputPaths>..\ApplicationWatcher.Service.Api\bin\$(Configuration)\netcoreapp3.1\win10-x64</LinkerBaseInputPaths>
+      <DefineConstants>BasePath=..\ApplicationWatcher.Service.Api\bin\$(Configuration)\netcoreapp3.1\win10-x64</DefineConstants>
+    </PropertyGroup>
+    <HeatDirectory OutputFile="ApplicationWatcher.Service.Api.wxs" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="ApplicationWatcherServiceProject" SuppressCom="true" Directory="..\ApplicationWatcher.Service.Api\bin\$(Configuration)\netcoreapp3.1\win10-x64" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" />
+  </Target>
+</Project>
