@@ -1,0 +1,31 @@
+﻿<Window x:Class="ApplicationWatcher.WatchedClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:ApplicationWatcher.WatchedClient.ViewModels"
+        mc:Ignorable="d"
+        Title="Watched" 
+        Height="450" Width="800"
+        d:DataContext="{d:DesignInstance viewModels:MainViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Button Command="{Binding StartServerCommand}"
+                Content="Start Server"
+                Grid.Row="0"/>
+
+        <Button Command="{Binding StopServerCommand}"
+                Content="Stop Server"
+                Grid.Row="1"/>
+
+        <Button Command="{Binding SimulateFreezeCommand}"
+                Content="Simulate Freeze"
+                Grid.Row="2"/>
+    </Grid>
+</Window>
