@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SharedLib.Generated";
+service WatcherService {
+	rpc HealthCheck (Empty) returns (HealthCheckResponse) {}
+}
+
+message Empty { }
+
+message HealthCheckResponse { 
+	Status status = 1;
+}
+
+enum Status {
+	OK = 0;
+	FAIL = 1;
+}

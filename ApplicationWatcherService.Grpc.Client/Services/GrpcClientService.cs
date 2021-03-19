@@ -5,6 +5,8 @@ using ApplicationWatcherService.Grpc.Client.Interfaces;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
+using SharedLib.Generated;
+using Status = SharedLib.Generated.Status;
 
 namespace ApplicationWatcherService.Grpc.Client.Services
 {
@@ -23,7 +25,7 @@ namespace ApplicationWatcherService.Grpc.Client.Services
             {
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                 using var channel = GrpcChannel.ForAddress(address);
-                var client = new SvService.SvServiceClient(channel);
+                var client = new WatcherService.WatcherServiceClient(channel);
 
                 _logger.LogInformation($"Send heath check for address: {address}");
 
