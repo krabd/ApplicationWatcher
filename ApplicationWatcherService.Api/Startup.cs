@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using ApplicationWatcherService.Api.Interfaces;
 using ApplicationWatcherService.Api.Models.Options;
 using ApplicationWatcherService.Api.Services.HostedServices;
+using ApplicationWatcherService.Utils.Interfaces;
+using ApplicationWatcherService.Utils.Services;
 
 namespace ApplicationWatcherService.Api
 {

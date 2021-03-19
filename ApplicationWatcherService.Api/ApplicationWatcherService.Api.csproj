@@ -17,6 +17,10 @@
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationWatcherService.Utils\ApplicationWatcherService.Utils.csproj" />
+  </ItemGroup>
+
   <Target Name="NSwag" BeforeTargets="AfterBuild">
     <Exec ConsoleToMSBuild="true" ContinueOnError="true" Command="$(NSwagExe_Core31) run nswag.json /variables:Configuration=$(Configuration),CSharpOutputPath=$(MSBuildThisFileDirectory)..\ApplicationWatcherService.HttpClient">
       <Output TaskParameter="ExitCode" PropertyName="NSwagExitCode" />

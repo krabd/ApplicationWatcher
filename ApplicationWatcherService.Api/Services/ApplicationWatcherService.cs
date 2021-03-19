@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ApplicationWatcherService.Api.Interfaces;
 using ApplicationWatcherService.Api.Models.Options;
+using ApplicationWatcherService.Utils.Helpers;
+using ApplicationWatcherService.Utils.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
