@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define SvProxyService_Target="..\ApplicationWatcher.Service.Api\bin\Debug\netcoreapp3.1\win10-x64\"?>
-  <Product Id="*" Name="ApplicationWatcher.Service.Setup" Language="1033" Version="1.0.0.0" Manufacturer="ApplicationWatcher" UpgradeCode="1a3bbe3e-05d9-43dd-b7c3-1317ed618789">
+  <?define ApplicationWatcher_Target="..\ApplicationWatcher.Service.Api\bin\Debug\netcoreapp3.1\win10-x64\"?>
+  <Product Id="*" Name="ApplicationWatcher" Language="1033" Version="1.0.0.0" Manufacturer="ApplicationWatcher" UpgradeCode="1a3bbe3e-05d9-43dd-b7c3-1317ed618789">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -24,7 +24,7 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <Component Id="ProductComponent">
-        <File Vital="yes" KeyPath="yes" DiskId="1" Id="ApplicationWatcherEXE" Name="ApplicationWatcher.Service.Api.exe" Source="$(var.SvProxyService_Target)\ApplicationWatcher.Service.Api.exe" />
+        <File Vital="yes" KeyPath="yes" DiskId="1" Id="ApplicationWatcherEXE" Name="ApplicationWatcher.exe" Source="$(var.ApplicationWatcher_Target)\ApplicationWatcher.Service.Api.exe" />
 
         <ServiceInstall Id="ServiceInstaller"
                         Type="ownProcess"
