@@ -4,7 +4,9 @@ using ApplicationWatcher.Service.Api.Interfaces;
 using ApplicationWatcher.Service.Api.Models.Options;
 using ApplicationWatcher.Service.Api.Services.HostedServices;
 using ApplicationWatcher.Service.Utils.Interfaces;
+using ApplicationWatcher.Service.Utils.Interfaces.Wrappers;
 using ApplicationWatcher.Service.Utils.Services;
+using ApplicationWatcher.Service.Utils.Services.Wrappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -44,6 +46,10 @@ namespace ApplicationWatcher.Service.Api
             services.AddTransient<IGrpcClientService, GrpcClientService>();
             services.AddTransient<IRegistryService, RegistryService>();
             services.AddTransient<IProcessService, ProcessService>();
+
+            services.AddTransient<IPathWrapperService, PathWrapperService>();
+            services.AddTransient<IProcessWrapperService, ProcessWrapperService>();
+            services.AddTransient<IRegistryWrapperService, RegistryWrapperService>();
 
             services.AddHostedService<HealthCheckService>();
         }

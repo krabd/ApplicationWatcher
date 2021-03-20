@@ -10,7 +10,6 @@ using ApplicationWatcher.Service.Utils.Helpers;
 using ApplicationWatcher.Service.Utils.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Win32;
 using RegistryOptions = ApplicationWatcher.Service.Api.Models.Options.RegistryOptions;
 
 namespace ApplicationWatcher.Service.Api.Services
@@ -45,20 +44,21 @@ namespace ApplicationWatcher.Service.Api.Services
         {
             try
             {
-                var exePath = _registryService.GetRegistryValue<string>(_registryOptions.BasePath, _registryOptions.ExeValue, RegistryHive.LocalMachine);
-                if (string.IsNullOrEmpty(exePath))
+                var exePath = _registryService.GetRegistryValue(_registryOptions.BasePath, _registryOptions.ExeValue);
+                if (!string.IsNullOrEmpty(exePath))
                 {
-                    _logger.LogInformation($"Try reboot exePath is empty");
-                    return;
+                    _logger.LogInformation($"Try reboot exePath = {exePath}");
+
+                    var process = _processService.GetProcessByExePath(exePath);
+                    process?.Kill();
+
+                    //TODO: если откажемся от виндового сервиса, можно использовать нормальный Process.Start(exePath);
+                    ApplicationLoader.StartProcessAndBypassUAC(exePath, out var procInfo);
                 }
-
-                _logger.LogInformation($"Try reboot exePath = {exePath}");
-
-                var process = _processService.GetProcessByExePath(exePath);
-                process?.Kill();
-
-                //TODO: если откажемся от виндового сервиса, можно использовать нормальный Process.Start(exePath);
-                ApplicationLoader.StartProcessAndBypassUAC(exePath, out var procInfo);
+                else
+                {
+                    _logger.LogInformation($"Can not find exe path");
+                }
             }
             catch (Exception e)
             {
@@ -70,28 +70,28 @@ namespace ApplicationWatcher.Service.Api.Services
         {
             try
             {
-                var logsPath = _registryService.GetRegistryValue<string>(_registryOptions.BasePath, _registryOptions.LogsValue, RegistryHive.LocalMachine);
-                if (string.IsNullOrEmpty(logsPath))
+                var logsPath = _registryService.GetRegistryValue(_registryOptions.BasePath, _registryOptions.LogsValue);
+                if (!string.IsNullOrEmpty(logsPath))
                 {
-                    _logger.LogInformation($"Try get logs logsPath is empty");
-                    return null;
+                    var destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{Guid.NewGuid()}.zip");
+
+                    _logger.LogInformation($"Try zip logsPath = {logsPath}");
+                    _logger.LogInformation($"Try zip destPath = {destinationPath}");
+
+                    ZipFile.CreateFromDirectory(logsPath, destinationPath);
+                    var fileData = File.ReadAllBytes(destinationPath);
+                    File.Delete(destinationPath);
+                    return fileData;
                 }
 
-                var destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{Guid.NewGuid()}.zip");
-
-                _logger.LogInformation($"Try zip logsPath = {logsPath}");
-                _logger.LogInformation($"Try zip destPath = {destinationPath}");
-
-                ZipFile.CreateFromDirectory(logsPath, destinationPath);
-                var fileData = File.ReadAllBytes(destinationPath);
-                File.Delete(destinationPath);
-                return fileData;
+                _logger.LogInformation($"Try get logs logsPath is empty");
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error get logs sv", e);
-                return null;
             }
+
+            return null;
         }
 
         public async Task<bool> HealthCheck(CancellationToken cancellationToken)
