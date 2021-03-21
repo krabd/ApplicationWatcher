@@ -54,7 +54,7 @@ namespace ApplicationWatcher.Service.Api.Controllers
         {
             _logger.LogInformation($"health_check -->");
 
-            var result = await _applicationWatcherService.HealthCheck(cancellationToken);
+            var result = await _applicationWatcherService.HealthCheckAsync(cancellationToken);
 
             _logger.LogInformation($"health_check <--");
             return Ok(result);

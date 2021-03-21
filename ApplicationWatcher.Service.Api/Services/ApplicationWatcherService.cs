@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using ApplicationWatcher.Grpc.Client.Interfaces;
 using ApplicationWatcher.Service.Api.Interfaces;
 using ApplicationWatcher.Service.Api.Models.Options;
-using ApplicationWatcher.Service.Utils.Helpers;
 using ApplicationWatcher.Service.Utils.Interfaces;
+using ApplicationWatcher.Service.Utils.Interfaces.Wrappers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RegistryOptions = ApplicationWatcher.Service.Api.Models.Options.RegistryOptions;
@@ -18,6 +17,7 @@ namespace ApplicationWatcher.Service.Api.Services
     {
         private readonly IRegistryService _registryService;
         private readonly IProcessService _processService;
+        private readonly IFileWrapperService _fileWrapperService;
         private readonly IGrpcClientService _grpcClient;
 
         private readonly RegistryOptions _registryOptions;
@@ -26,11 +26,14 @@ namespace ApplicationWatcher.Service.Api.Services
 
         private readonly ILogger<ApplicationWatcherService> _logger;
 
-        public ApplicationWatcherService(IRegistryService registryService, IProcessService processService, IGrpcClientService grpcClient,
-            IOptions<RegistryOptions> registryOptions, IOptions<HealthCheckOptions> healthCheckOptions, IOptions<GrpcOptions> grpcOptions, ILogger<ApplicationWatcherService> logger)
+        public ApplicationWatcherService(IRegistryService registryService, IProcessService processService, IFileWrapperService fileWrapperService,
+            IGrpcClientService grpcClient,
+            IOptions<RegistryOptions> registryOptions, IOptions<HealthCheckOptions> healthCheckOptions, IOptions<GrpcOptions> grpcOptions, 
+            ILogger<ApplicationWatcherService> logger)
         {
             _registryService = registryService;
             _processService = processService;
+            _fileWrapperService = fileWrapperService;
             _grpcClient = grpcClient;
 
             _registryOptions = registryOptions.Value;
@@ -52,8 +55,7 @@ namespace ApplicationWatcher.Service.Api.Services
                     var process = _processService.GetProcessByExePath(exePath);
                     process?.Kill();
 
-                    //TODO: если откажемся от виндового сервиса, можно использовать нормальный Process.Start(exePath);
-                    ApplicationLoader.StartProcessAndBypassUAC(exePath, out var procInfo);
+                    _processService.StartProcessFromWindowService(exePath);
                 }
                 else
                 {
@@ -68,6 +70,8 @@ namespace ApplicationWatcher.Service.Api.Services
 
         public byte[] GetLogs()
         {
+            byte[] fileData = null;
+
             try
             {
                 var logsPath = _registryService.GetRegistryValue(_registryOptions.BasePath, _registryOptions.LogsValue);
@@ -75,13 +79,17 @@ namespace ApplicationWatcher.Service.Api.Services
                 {
                     var destinationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{Guid.NewGuid()}.zip");
 
-                    _logger.LogInformation($"Try zip logsPath = {logsPath}");
-                    _logger.LogInformation($"Try zip destPath = {destinationPath}");
+                    _logger.LogInformation($"Create zip logsPath = {logsPath} destPath = {destinationPath}");
 
-                    ZipFile.CreateFromDirectory(logsPath, destinationPath);
-                    var fileData = File.ReadAllBytes(destinationPath);
-                    File.Delete(destinationPath);
-                    return fileData;
+                    _fileWrapperService.CreateZip(logsPath, destinationPath);
+
+                    _logger.LogInformation($"Read zip data path = {destinationPath}");
+
+                    fileData = _fileWrapperService.ReadAllBytes(destinationPath);
+
+                    _logger.LogInformation($"Delete zip path = {destinationPath}");
+
+                    _fileWrapperService.Delete(destinationPath);
                 }
 
                 _logger.LogInformation($"Try get logs logsPath is empty");
@@ -91,10 +99,10 @@ namespace ApplicationWatcher.Service.Api.Services
                 _logger.LogError($"Error get logs sv", e);
             }
 
-            return null;
+            return fileData;
         }
 
-        public async Task<bool> HealthCheck(CancellationToken cancellationToken)
+        public async Task<bool> HealthCheckAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Health check Sv");
 

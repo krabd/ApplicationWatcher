@@ -9,6 +9,6 @@ namespace ApplicationWatcher.Service.Api.Interfaces
 
         byte[] GetLogs();
 
-        Task<bool> HealthCheck(CancellationToken cancellationToken);
+        Task<bool> HealthCheckAsync(CancellationToken cancellationToken);
     }
 }

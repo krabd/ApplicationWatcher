@@ -71,5 +71,19 @@ namespace ApplicationWatcher.Service.Utils.Services
 
             return process;
         }
+
+        public void StartProcessFromWindowService(string exePath)
+        {
+            try
+            {
+                _logger.LogError($"Try start process by exe path = {exePath}");
+
+                _processWrapperService.StartProcessFromWindowService(exePath);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error start process by exe path = {exePath}", e);
+            }
+        }
     }
 }

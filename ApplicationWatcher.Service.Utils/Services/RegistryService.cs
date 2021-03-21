@@ -25,20 +25,10 @@ namespace ApplicationWatcher.Service.Utils.Services
             {
                 try
                 {
-                    using var key = _registryWrapperService.LocalMachineOpenKey(basePath);
-
-                    if (key != null)
+                    value = _registryWrapperService.GetRegistryValue<string>(basePath, valueName, RegistryHive.LocalMachine);
+                    if (value == null)
                     {
-                        value = (string)key.GetValue(valueName);
-
-                        if (value == null)
-                        {
-                            _logger.LogInformation($"Can not find registry value = {valueName} in path {basePath}");
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogInformation($"Can not find registry key = {basePath}");
+                        _logger.LogInformation($"Can not find registry value = {valueName} path = {basePath}");
                     }
                 }
                 catch (Exception e)

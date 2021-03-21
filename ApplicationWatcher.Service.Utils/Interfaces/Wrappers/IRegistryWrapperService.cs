@@ -4,6 +4,6 @@ namespace ApplicationWatcher.Service.Utils.Interfaces.Wrappers
 {
     public interface IRegistryWrapperService
     {
-        RegistryKey LocalMachineOpenKey(string path);
+        T GetRegistryValue<T>(string keyPath, string valueName, RegistryHive hive);
     }
 }

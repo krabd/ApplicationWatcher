@@ -50,6 +50,7 @@ namespace ApplicationWatcher.Service.Api
             services.AddTransient<IPathWrapperService, PathWrapperService>();
             services.AddTransient<IProcessWrapperService, ProcessWrapperService>();
             services.AddTransient<IRegistryWrapperService, RegistryWrapperService>();
+            services.AddTransient<IFileWrapperService, FileWrapperService>();
 
             services.AddHostedService<HealthCheckService>();
         }
